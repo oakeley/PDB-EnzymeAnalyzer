@@ -450,6 +450,7 @@ import matplotlib.pyplot as plt
 ```bash
 pip install biopython numpy scipy matplotlib scikit-learn
 # Optional: install DSSP from https://swift.cmbi.umcn.nl/gv/dssp/
+# If running a Debian-like OS (Debian, Ubuntu, Mint, etc): sudo apt install dssp
 ```
 
 ## 🚀 Usage Examples
@@ -459,12 +460,11 @@ pip install biopython numpy scipy matplotlib scikit-learn
 python pdb_analyzer.py /path/to/pdb/files
 ```
 
-### Research-Focused Analysis
+### Optional Analysis
 ```bash
-python pdb_analyzer.py ./bacterial_enzymes \
+python pdb_analyzer.py /path/to/pdb/files \
     -o biosynthetic_analysis \
-    --confidence-threshold 0.6 \
-    --verbose
+    --confidence-threshold 0.6
 ```
 
 ### Understanding Output
