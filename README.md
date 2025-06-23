@@ -243,7 +243,7 @@ def predict_enzyme_function(self, catalytic_sites, binding_sites, structure):
 
 **Detailed Method**:
 1. **Secondary Structure Analysis**:
-   - **Primary**: Uses DSSP if available (external program)
+   - **Primary**: Uses DSSP if available (external program) - script automatically fixes AlphaFold "bad PDF" headers and puts the fixed files in the **dsspPDF folder**
    - **Fallback**: Simple φ/ψ angle analysis from backbone coordinates
    ```python
    # Helix: -90° ≤ φ ≤ -30°, -70° ≤ ψ ≤ 50°
