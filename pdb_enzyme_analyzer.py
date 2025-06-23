@@ -22,6 +22,7 @@ import time
 import logging
 import json
 import base64
+import tempfile
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple, Set
 import numpy as np
@@ -35,6 +36,7 @@ warnings.filterwarnings('ignore')
 # Biopython imports
 from Bio.PDB import PDBParser, DSSP, NeighborSearch, Selection
 from Bio.PDB.Polypeptide import PPBuilder
+from Bio.PDB import PDBIO
 from Bio.Data.IUPACData import protein_letters_3to1
 from Bio.SeqUtils.ProtParam import ProteinAnalysis
 from Bio.Seq import Seq
@@ -52,9 +54,12 @@ import subprocess
 from dataclasses import dataclass, asdict
 from collections import defaultdict, Counter
 
-# Setup logging
+# Setup logging - FIXED: Suppress matplotlib font debug messages
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+# Suppress matplotlib font manager debug messages
+logging.getLogger('matplotlib.font_manager').setLevel(logging.WARNING)
 
 def three_to_one(resname):
     """Convert a three-letter amino acid code to one-letter."""
@@ -690,7 +695,7 @@ class BiosyntheticEnzymeAnalyzer:
             'flavin_monooxygenase': {
                 'motifs': {
                     'flavin_binding': ['GLY', 'GLY', 'GLY'],  # Rossmann fold
-                    'nadph_binding': ['GLY', 'ALAcycles', 'GLY']
+                    'nadph_binding': ['GLY', 'ALA', 'GLY']
                 },
                 'cofactors': ['FAD', 'FMN', 'NADPH'],
                 'description': 'Flavin Monooxygenase',
@@ -1346,36 +1351,50 @@ class EnzymeFunctionPredictor:
 
 class StructuralAnalyzer:
     """Analyzes structural properties and features"""
-    
+
     def __init__(self):
         self.dssp_available = self._check_dssp()
-    
+        self.dssp_pdb_dir = Path("dsspPDB")
+        self.dssp_pdb_dir.mkdir(exist_ok=True)
+
     def _check_dssp(self) -> bool:
-        """Check if DSSP is available"""
         try:
-            subprocess.run(['dssp', '--version'], capture_output=True, timeout=5)
-            return True
-        except:
-            return False
-    
+            result = subprocess.run(['mkdssp', '--version'], capture_output=True, timeout=5)
+            if result.returncode == 0:
+                logger.info("Found mkdssp (DSSP v4.x)")
+                return True
+        except Exception:
+            pass
+        logger.warning("DSSP not found or not working. Secondary structure analysis will use fallback method.")
+        return False
+
+    def _write_clean_pdb(self, structure, pdb_filename):
+        output_path = self.dssp_pdb_dir / Path(pdb_filename).name
+
+        # Write temporary raw PDB
+        tmp = output_path.with_suffix(".tmp")
+        io = PDBIO()
+        io.set_structure(structure)
+        io.save(str(tmp))
+
+        # Read contents, add HEADER line, write to final output
+        with open(tmp, "r") as f:
+            lines = f.readlines()
+
+        header = f"HEADER    {Path(pdb_filename).stem[:66]:<66}\n"
+        with open(output_path, "w") as f:
+            f.write(header)
+            f.writelines(lines)
+
+        tmp.unlink()  # Clean up
+        return output_path
+
     def analyze_structure(self, structure, pdb_file: str) -> StructuralFeatures:
-        """Comprehensive structural analysis"""
-        
-        # Secondary structure analysis
         secondary_structure = self._analyze_secondary_structure(structure, pdb_file)
-        
-        # Geometric properties
         geometric_properties = self._calculate_geometric_properties(structure)
-        
-        # Surface properties
         surface_properties = self._calculate_surface_properties(structure)
-        
-        # Domain architecture (simplified)
         domain_architecture = self._analyze_domain_architecture(structure)
-        
-        # Unusual features
         unusual_features = self._identify_unusual_features(structure)
-        
         return StructuralFeatures(
             secondary_structure=secondary_structure,
             geometric_properties=geometric_properties,
@@ -1383,35 +1402,29 @@ class StructuralAnalyzer:
             domain_architecture=domain_architecture,
             unusual_features=unusual_features
         )
-    
+
     def _analyze_secondary_structure(self, structure, pdb_file: str) -> Dict[str, float]:
-        """Analyze secondary structure content"""
         ss_content = {'helix': 0.0, 'sheet': 0.0, 'loop': 0.0}
-        
         if self.dssp_available:
             try:
-                dssp = DSSP(structure[0], pdb_file)
-                ss_codes = {'H': 'helix', 'B': 'sheet', 'E': 'sheet', 'G': 'helix', 
-                           'I': 'helix', 'T': 'loop', 'S': 'loop', '-': 'loop'}
-                
+                cleaned_path = self._write_clean_pdb(structure, pdb_file)
+                dssp = DSSP(structure[0], str(cleaned_path), dssp='mkdssp')
+                ss_codes = {'H': 'helix', 'B': 'sheet', 'E': 'sheet', 'G': 'helix',
+                            'I': 'helix', 'T': 'loop', 'S': 'loop', '-': 'loop'}
                 ss_count = Counter()
                 for residue in dssp:
                     ss_code = residue[2]
                     ss_type = ss_codes.get(ss_code, 'loop')
                     ss_count[ss_type] += 1
-                
                 total = sum(ss_count.values())
                 if total > 0:
                     for ss_type in ss_content:
                         ss_content[ss_type] = ss_count[ss_type] / total
-                        
             except Exception as e:
-                logger.warning(f"DSSP analysis failed: {e}")
-        
-        # Fallback: simple phi/psi analysis
-        if sum(ss_content.values()) == 0:
+                logger.warning(f"DSSP analysis failed on {pdb_file}: {e}")
+                ss_content = self._simple_secondary_structure_analysis(structure)
+        else:
             ss_content = self._simple_secondary_structure_analysis(structure)
-        
         return ss_content
     
     def _simple_secondary_structure_analysis(self, structure) -> Dict[str, float]:
@@ -2668,7 +2681,7 @@ class PDBAnalysisPipeline:
 def main():
     """Main command line interface"""
     parser = argparse.ArgumentParser(
-        description='PDB Enzymatic Function and Structural Analysis Pipeline with Biosynthetic Enzyme Detection',
+        description='PDB Enzymatic Function and Structural Analysis Pipeline with Biosynthetic Enzyme Detection - FIXED VERSION',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 ANALYSIS FEATURES:
@@ -2693,9 +2706,15 @@ BIOSYNTHETIC SPECIALIZATION:
   • Suggests potential natural products and substrates
   • Specialized for antibiotic and secondary metabolite discovery
 
+FIXES IN THIS VERSION:
+  • ✅ DSSP v4.x compatibility (mkdssp executable)
+  • ✅ Suppressed matplotlib font debug messages
+  • ✅ Better error handling for DSSP failures
+  • ✅ Enhanced logging control
+
 REQUIREMENTS:
   • biopython, numpy, scipy, matplotlib, scikit-learn
-  • Optional: DSSP for enhanced secondary structure analysis
+  • Optional: DSSP/mkdssp for enhanced secondary structure analysis
 
 EXAMPLES:
   python pdb_analyzer.py /path/to/bacterial/pdb/folder
@@ -2716,6 +2735,8 @@ EXAMPLES:
     
     if args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
+        # Keep matplotlib font manager warnings suppressed even in debug mode
+        logging.getLogger('matplotlib.font_manager').setLevel(logging.WARNING)
     
     # Validate input
     pdb_folder = Path(args.pdb_folder)
@@ -2729,8 +2750,8 @@ EXAMPLES:
         sys.exit(1)
     
     # Print header
-    print("🧬 PDB ENZYMATIC FUNCTION & STRUCTURAL ANALYSIS PIPELINE")
-    print("=" * 70)
+    print("🧬 PDB ENZYMATIC FUNCTION & STRUCTURAL ANALYSIS PIPELINE - FIXED VERSION")
+    print("=" * 80)
     print(f"📂 PDB folder: {args.pdb_folder}")
     print(f"📁 Output directory: {args.output_dir}")
     print(f"🎯 Confidence threshold: {args.confidence_threshold}")
@@ -2747,9 +2768,9 @@ EXAMPLES:
         analysis_time = time.time() - start_time
         
         # Print results summary
-        print("\n" + "=" * 70)
+        print("\n" + "=" * 80)
         print("✅ ANALYSIS COMPLETED!")
-        print("=" * 70)
+        print("=" * 80)
         print(f"⏱️  Total analysis time: {analysis_time:.1f} seconds")
         print(f"📊 Files processed: {results['successful_analyses']}/{results['total_files']}")
         print(f"⚡ Average time per protein: {analysis_time/results['successful_analyses']:.1f}s")
@@ -2817,7 +2838,7 @@ EXAMPLES:
             print(f"   7. 🧬 Consider heterologous expression for biosynthetic enzymes")
             print(f"   8. 🧬 Analyze gene clusters for complete biosynthetic pathways")
             print(f"   9. 🧬 Test predicted substrates and cofactors for natural product formation")
-        
+       
     except KeyboardInterrupt:
         print("\n❌ Analysis interrupted by user")
         sys.exit(1)
