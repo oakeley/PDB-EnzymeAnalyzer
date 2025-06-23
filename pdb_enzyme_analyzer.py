@@ -54,7 +54,7 @@ import subprocess
 from dataclasses import dataclass, asdict
 from collections import defaultdict, Counter
 
-# Setup logging - FIXED: Suppress matplotlib font debug messages
+# Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -1353,9 +1353,13 @@ class StructuralAnalyzer:
     """Analyzes structural properties and features"""
 
     def __init__(self):
+        self.output_dir = Path(output_dir)
+        self.dssp_pdb_dir = self.output_dir / "dsspPDB"
+        self.reports_dir = self.output_dir / "individual_reports"
         self.dssp_available = self._check_dssp()
-        self.dssp_pdb_dir = Path("dsspPDB")
-        self.dssp_pdb_dir.mkdir(exist_ok=True)
+
+        self.dssp_pdb_dir.mkdir(parents=True, exist_ok=True)
+        self.reports_dir.mkdir(parents=True, exist_ok=True)
 
     def _check_dssp(self) -> bool:
         try:
@@ -1389,6 +1393,19 @@ class StructuralAnalyzer:
         tmp.unlink()  # Clean up
         return output_path
 
+    def _write_dssp_output(self, cleaned_path: Path):
+        try:
+            dssp_output = subprocess.run([
+                'mkdssp', str(cleaned_path), '-'
+            ], capture_output=True, text=True, timeout=10)
+
+            if dssp_output.returncode == 0 and dssp_output.stdout:
+                dssp_report_path = self.reports_dir / (cleaned_path.stem + '_dssp.txt')
+                with open(dssp_report_path, 'w') as f:
+                    f.write(dssp_output.stdout)
+        except Exception as e:
+            logger.warning(f"Failed to write DSSP output for {cleaned_path.name}: {e}")
+
     def analyze_structure(self, structure, pdb_file: str) -> StructuralFeatures:
         secondary_structure = self._analyze_secondary_structure(structure, pdb_file)
         geometric_properties = self._calculate_geometric_properties(structure)
@@ -1408,6 +1425,7 @@ class StructuralAnalyzer:
         if self.dssp_available:
             try:
                 cleaned_path = self._write_clean_pdb(structure, pdb_file)
+                self._write_dssp_output(cleaned_path)
                 dssp = DSSP(structure[0], str(cleaned_path), dssp='mkdssp')
                 ss_codes = {'H': 'helix', 'B': 'sheet', 'E': 'sheet', 'G': 'helix',
                             'I': 'helix', 'T': 'loop', 'S': 'loop', '-': 'loop'}
