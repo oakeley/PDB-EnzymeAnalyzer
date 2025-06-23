@@ -843,10 +843,7 @@ def test_serine_protease_detection():
 - **DSSP Algorithm - Wikipedia**: https://en.wikipedia.org/wiki/DSSP_(algorithm)
   - *Comprehensive description of the DSSP algorithm by Kabsch and Sander*
 
-### Academic References on Secondary Structure
-- **Kabsch W, Sander C (1983)**. "Dictionary of protein secondary structure: pattern recognition of hydrogen-bonded and geometrical features." *Biopolymers*, 22(12):2577-637.
-  - *Original DSSP algorithm publication (reference provided via Wikipedia)*
-
+### Secondary Structure
 - **Touw WG et al. (2015)**. "A series of PDB-related databanks for everyday needs." *Nucleic Acids Research*, 43(D1):D364-8.
   - **URL**: https://pmc.ncbi.nlm.nih.gov/articles/PMC4384014/
   - *Modern applications of DSSP in structural biology*
@@ -859,16 +856,12 @@ def test_serine_protease_detection():
 
 ## 🤖 **DBSCAN Clustering Algorithm**
 
-### Official Algorithm Documentation
+### Algorithm Documentation and Examples
 - **DBSCAN - Wikipedia**: https://en.wikipedia.org/wiki/DBSCAN
   - *Comprehensive overview of the DBSCAN algorithm with mathematical formulation*
 
 - **Scikit-learn DBSCAN Documentation**: https://scikit-learn.org/stable/modules/generated/sklearn.cluster.DBSCAN.html
   - *Official Python implementation documentation with parameters and usage*
-
-### Academic and Educational Resources
-- **Ester M et al. (1996)**. "A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases with Noise." *KDD-96 Proceedings*.
-  - *Original DBSCAN algorithm publication (referenced in Wikipedia)*
 
 - **DataCamp DBSCAN Guide**: https://www.datacamp.com/tutorial/dbscan-clustering-algorithm
   - *Comprehensive tutorial on DBSCAN clustering with practical examples*
@@ -961,16 +954,20 @@ def test_serine_protease_detection():
 
 ### Structure-Based Catalytic Residue Prediction
 - **Xie L, Bourne PE (2008)**. "Detecting evolutionary relationships across existing fold space, using sequence order-independent profile-profile alignments." *Proceedings of the National Academy of Sciences*, 105(14):5441-6.
+  - **URL**: https://pubmed.ncbi.nlm.nih.gov/18385384/
   - *Methods for predicting functional sites from structural features*
 
 - **Petrova NV, Wu CH (2006)**. "Prediction of catalytic residues using Support Vector Machine with selected protein sequence and structural properties." *BMC Bioinformatics*, 7:312.
+  - **URL**: https://pubmed.ncbi.nlm.nih.gov/16790052/
   - *Machine learning approaches to catalytic residue identification*
 
 ### Distance-Based and Network Analysis Methods
 - **Amitai G et al. (2004)**. "Network analysis of protein structures identifies functional residues." *Journal of Molecular Biology*, 344(4):1135-46.
+  - **URL**: https://pubmed.ncbi.nlm.nih.gov/15544817/
   - *Network centrality measures for identifying catalytic residues*
 
 - **del Sol A et al. (2006)**. "Residue centrality, functionally important residues, and active site shape: analysis of enzyme and non-enzyme families." *Protein Science*, 15(9):2120-8.
+  - **URL**: https://pubmed.ncbi.nlm.nih.gov/16882992/
   - *Centrality-based prediction of functionally important residues*
 
 ---
@@ -979,13 +976,16 @@ def test_serine_protease_detection():
 
 ### Protein Data Bank and Structure Quality
 - **wwPDB Consortium (2019)**. "Protein Data Bank: the single global archive for 3D macromolecular structure data." *Nucleic Acids Research*, 47(D1):D520-D528.
+  - **URL**: https://pubmed.ncbi.nlm.nih.gov/30357364/
   - *Official PDB database for protein structure data*
 
-- **Gore S et al. (2017)**. "Validation of protein structures in the Protein Data Bank." *Structure*, 25(12):1916-1927.
+- **Gore S et al. (2017)**. "Validation of Structures in the Protein Data Bank." *Structure*, 25(12):1916-1927.
+  - **URL**: https://pubmed.ncbi.nlm.nih.gov/29174494/
   - *Methods for assessing protein structure quality and validation*
 
 ### Biopython and Structural Analysis Tools
 - **Cock PJA et al. (2009)**. "Biopython: freely available Python tools for computational molecular biology and bioinformatics." *Bioinformatics*, 25(11):1422-3.
+  - **URL**: https://pubmed.ncbi.nlm.nih.gov/19304878/
   - *Primary reference for the Biopython library used in the script*
 
 ---
@@ -998,6 +998,7 @@ def test_serine_protease_detection():
   - *DBSCAN applications in spatial cell analysis and tissue biology*
 
 - **Guerra JVS et al. (2021)**. "pyKVFinder: an efficient and integrable Python package for biomolecular cavity detection and characterization in data science." *BMC Bioinformatics*, 22:607.
+  - **URL**: https://pubmed.ncbi.nlm.nih.gov/34930115/
   - *Modern Python tools for cavity detection with clustering applications*
 
 ### Network-Based Spatial Analysis
@@ -1016,10 +1017,12 @@ def test_serine_protease_detection():
 
 ### Distance Thresholds in Protein Analysis
 - **Bartlett GJ et al. (2002)**. "Analysis of catalytic residues in enzyme active sites." *Journal of Molecular Biology*, 324(1):105-21.
+  - **URL**: https://pubmed.ncbi.nlm.nih.gov/12421562/
   - *Scientific basis for distance thresholds used in catalytic site analysis*
 
 ### Performance Optimization in Structural Analysis
 - **Zhang Y, Skolnick J (2005)**. "TM-align: a protein structure alignment algorithm based on the TM-score." *Nucleic Acids Research*, 33(7):2302-9.
+  - **URL**: https://pubmed.ncbi.nlm.nih.gov/15849316/
   - *Efficient algorithms for protein structure comparison and analysis*
 
 ---
@@ -1028,10 +1031,12 @@ def test_serine_protease_detection():
 
 ### Enzyme Function Prediction Accuracy
 - **Friedberg I (2006)**. "Automated protein function prediction--the genomics challenge." *Briefings in Bioinformatics*, 7(3):225-42.
+  - **URL**: https://pubmed.ncbi.nlm.nih.gov/16772267/
   - *Challenges and benchmarks in automated protein function prediction*
 
 ### Cross-Validation in Structural Biology
-- **Moult J et al. (2018)**. "Critical assessment of methods of protein structure prediction (CASP)-Round XIII." *Proteins*, 87(12):1011-1020.
+- **Kryshtafovych A et al. (2019)**. "Critical assessment of methods of protein structure prediction (CASP)-Round XIII." *Proteins*, 87(12):1011-1020.
+  - **URL**: https://pubmed.ncbi.nlm.nih.gov/31589781/
   - *Standards for validation in computational structural biology*
 
 ---
@@ -1040,14 +1045,18 @@ def test_serine_protease_detection():
 
 ### Supplementary Databases
 - **UniProt Consortium (2023)**. "UniProt: the Universal Protein Knowledgebase in 2023." *Nucleic Acids Research*, 51(D1):D523-D531.
+  - **URL**: https://pubmed.ncbi.nlm.nih.gov/36408920/
   - *Primary protein sequence and functional annotation database*
 
 - **KEGG Kanehisa M et al. (2023)**. "KEGG for taxonomy-based analysis of pathways and genomes." *Nucleic Acids Research*, 51(D1):D587-D592.
+  - **URL**: https://pubmed.ncbi.nlm.nih.gov/36300620/
   - *Metabolic pathway and enzyme reaction database*
 
 ### Programming and Implementation
 - **Harris CR et al. (2020)**. "Array programming with NumPy." *Nature*, 585(7825):357-362.
+  - **URL**: https://pubmed.ncbi.nlm.nih.gov/32939066/
   - *NumPy library for numerical computations used in the script*
 
 - **Virtanen P et al. (2020)**. "SciPy 1.0: fundamental algorithms for scientific computing in Python." *Nature Methods*, 17(3):261-272.
+  - **URL**: https://pubmed.ncbi.nlm.nih.gov/32015543/
   - *SciPy library for scientific computing and clustering algorithms*
