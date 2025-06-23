@@ -9,13 +9,13 @@ Imagine you're a detective trying to figure out what a mysterious machine does j
 - **Where things attach** (binding sites for substrates)
 - **Whether it makes natural products** (biosynthetic pathways like antibiotics)
 
-Think of it as a protein CSI lab that takes structural evidence and builds a functional profile.
+Think of it as a protein lab that takes structural evidence and builds a functional profile.
 
 ## 🎯 Core Concept & Critical Limitation
 
 **The Big Idea**: Protein function follows from structure. Just like you can often guess what a tool does by looking at its shape (a hammer has a flat striking surface, scissors have sharp crossing blades), you can predict what a protein does by examining its structural features.
 
-**⚠️ CRITICAL UNDERSTANDING**: This script works **completely offline** with **no external database connections**. Instead, it contains extensive **hardcoded knowledge dictionaries** built directly into the Python code - like having a biochemistry textbook memorized and programmed into the script.
+**⚠️ CRITICAL UNDERSTANDING**: This script works **completely offline** with **no external database connections** - so your question stays local and nothing should leak out and annoy your lawyers. Instead, it contains extensive **hardcoded knowledge dictionaries** built directly into the Python code - like having a biochemistry textbook memorized and programmed into the script.
 
 ### 📚 The Built-In "Knowledge Base"
 
@@ -60,14 +60,14 @@ self.biosynthetic_families = {
 ### 🔍 **Team 1: Catalytic Site Predictor**
 **Mission**: Find the "active workshop" where chemical reactions happen.
 
+**Real-world analogy**: Like finding the kitchen in a house by looking for the stove, sink, and counter arranged in a functional triangle.
+
 **Detailed Method**:
 1. **Residue Filtering**: Scans protein for known catalytic residues (SER, CYS, HIS, ASP, GLU, LYS, ARG, TYR, TRP)
 2. **Coordinate Extraction**: Gets the reactive atom coordinates (e.g., SER oxygen, CYS sulfur, HIS nitrogen)
 3. **Spatial Clustering**: Uses DBSCAN algorithm to group catalytic residues within 8Å of each other
 4. **Pattern Matching**: Checks clusters against hardcoded motifs (serine protease triad, zinc binding, etc.)
 5. **Confidence Scoring**: Combines spatial arrangement, known patterns, and residue types
-
-**Real-world analogy**: Like finding the kitchen in a house by looking for the stove, sink, and counter arranged in a functional triangle.
 
 **Key Methods**:
 - `find_catalytic_sites()`: Main detective function
@@ -92,7 +92,9 @@ for cluster in clusters:
 ```
 
 ### 🏠 **Team 2: Binding Site Analyzer**
-**Mission**: Find "parking spots" where other molecules can dock.
+**Mission**: Find places where other molecules could dock.
+
+**Real-world analogy**: Like finding all the parking spots around a building by checking which areas are surrounded by walls but still accessible.
 
 **Detailed Method**:
 1. **3D Grid Generation**: Creates a cubic grid around the protein (1Å spacing)
@@ -105,8 +107,6 @@ for cluster in clusters:
    - Volume (number of grid points × grid spacing³)
    - Surrounding residues within 8Å
    - Hydrophobicity and charge distribution
-
-**Real-world analogy**: Like finding all the parking spots around a building by checking which areas are surrounded by walls but still accessible.
 
 **Key Methods**:
 - `find_binding_sites()`: Main cavity hunter
@@ -136,7 +136,9 @@ for x, y, z in grid_points:
 ```
 
 ### 🧬 **Team 3: Biosynthetic Enzyme Analyzer** 
-**Mission**: Specialized detective for "natural product factories".
+**Mission**: Look for potential "natural product factories".
+
+**Real-world analogy**: Like recognizing a car assembly line by seeing specific stations (paint booth, engine assembly, etc.) arranged in a particular order.
 
 **Detailed Method**:
 1. **Family Screening**: Tests protein against 11 hardcoded biosynthetic enzyme families
@@ -152,8 +154,6 @@ for x, y, z in grid_points:
    - CoA binding: GLY-SER-THR patterns
    - NADPH binding: Rossmann fold signatures (glycine-rich)
    - Metal coordination: HIS-HIS-GLU arrangements
-
-**Real-world analogy**: Like recognizing a car assembly line by seeing specific stations (paint booth, engine assembly, etc.) arranged in a particular order.
 
 **Key Enzyme Families Detected**:
 - **Polyketide Synthases**: Make complex molecules like antibiotics
@@ -192,7 +192,7 @@ def _check_motif_presence(self, residues, motif_residues):
 ```
 
 ### ⚗️ **Team 4: Enzyme Function Predictor**
-**Mission**: Chief detective combining all evidence.
+**Mission**: Combine all evidence to make some suggestions.
 
 **Real-world analogy**: Like a detective combining fingerprints, DNA evidence, and witness testimony to solve a case.
 
@@ -285,7 +285,7 @@ def _calculate_geometric_properties(self, structure):
     return {'radius_of_gyration': rg, 'asphericity': asphericity}
 ```
 
-## 📊 Confidence Score Mathematics - The Complete Formula
+## 📊 Confidence Score Mathematics
 
 ### **Catalytic Site Confidence** (0.0-1.0):
 ```python
