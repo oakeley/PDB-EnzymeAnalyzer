@@ -2699,7 +2699,7 @@ class PDBAnalysisPipeline:
 def main():
     """Main command line interface"""
     parser = argparse.ArgumentParser(
-        description='PDB Enzymatic Function and Structural Analysis Pipeline with Biosynthetic Enzyme Detection - FIXED VERSION',
+        description='PDB Enzymatic Function and Structural Analysis Pipeline with Biosynthetic Enzyme Detection',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 ANALYSIS FEATURES:
@@ -2723,12 +2723,6 @@ BIOSYNTHETIC SPECIALIZATION:
   • Identifies bacterial vs fungal enzyme characteristics
   • Suggests potential natural products and substrates
   • Specialized for antibiotic and secondary metabolite discovery
-
-FIXES IN THIS VERSION:
-  • ✅ DSSP v4.x compatibility (mkdssp executable)
-  • ✅ Suppressed matplotlib font debug messages
-  • ✅ Better error handling for DSSP failures
-  • ✅ Enhanced logging control
 
 REQUIREMENTS:
   • biopython, numpy, scipy, matplotlib, scikit-learn
@@ -2768,7 +2762,7 @@ EXAMPLES:
         sys.exit(1)
     
     # Print header
-    print("🧬 PDB ENZYMATIC FUNCTION & STRUCTURAL ANALYSIS PIPELINE - FIXED VERSION")
+    print("🧬 PDB ENZYMATIC FUNCTION & STRUCTURAL ANALYSIS PIPELINE")
     print("=" * 80)
     print(f"📂 PDB folder: {args.pdb_folder}")
     print(f"📁 Output directory: {args.output_dir}")
