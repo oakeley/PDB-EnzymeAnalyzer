@@ -115,7 +115,7 @@ for cluster in clusters:
 
 **Real Example**:
 - Grid finds 47 cavity points clustered together
-- Volume = 47 × 1³ = 47 Ų
+- Volume = 47 × 1³ = 47 Å³
 - Surrounded by 6 residues: 2 hydrophobic, 2 polar, 2 charged
 - Classification: "Mixed binding site" with moderate binding likelihood
 
