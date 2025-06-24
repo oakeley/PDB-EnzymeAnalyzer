@@ -1369,7 +1369,7 @@ class StructuralAnalyzer:
                 return True
         except Exception:
             pass
-        logger.warning("DSSP not found or not working. Secondary structure analysis will use fallback method.")
+        logger.warning("DSSP not found or not working. Secondary structure analysis will use fallback phi/psi method.")
         return False
 
     def _write_clean_pdb(self, structure, pdb_filename):
@@ -2774,6 +2774,11 @@ EXAMPLES:
         # Initialize pipeline
         pipeline = PDBAnalysisPipeline(args.output_dir)
         
+        # Show DSSP status
+        dssp_status = "✅ DSSP available" if pipeline.structural_analyzer.dssp_available else "⚠️  DSSP not available (using phi/psi fallback)"
+        print(f"🔬 Secondary structure method: {dssp_status}")
+        print()
+
         # Run analysis
         start_time = time.time()
         results = pipeline.analyze_pdb_folder(args.pdb_folder)
