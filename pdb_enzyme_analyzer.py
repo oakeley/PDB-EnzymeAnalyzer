@@ -1352,7 +1352,7 @@ class EnzymeFunctionPredictor:
 class StructuralAnalyzer:
     """Analyzes structural properties and features"""
 
-    def __init__(self):
+    def __init__(self, output_dir: str = "pdb_analysis_results"):
         self.output_dir = Path(output_dir)
         self.dssp_pdb_dir = self.output_dir / "dsspPDB"
         self.reports_dir = self.output_dir / "individual_reports"
@@ -1649,7 +1649,7 @@ class PDBAnalysisPipeline:
         self.catalytic_predictor = CatalyticSitePredictor()
         self.binding_analyzer = BindingSiteAnalyzer()
         self.enzyme_predictor = EnzymeFunctionPredictor()
-        self.structural_analyzer = StructuralAnalyzer()
+        self.structural_analyzer = StructuralAnalyzer(output_dir)
         
         # PDB parser
         self.pdb_parser = PDBParser(QUIET=True)
